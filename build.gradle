@@ -65,7 +65,7 @@ sonarqube {
         // SonarQube project settings
         property "sonar.projectKey", "JenkinsPipeline"
         property "sonar.projectName", "JenkinsPipeline"
-        property "sonar.host.url","http://13.217.46.188:9000"
+        property "sonar.host.url","https://sonarcloud.io"
 
         // Source & test locations
         property "sonar.sources", "my-docker-apps/src/main/java"
