@@ -4,7 +4,7 @@ pipeline {
     environment {
         DOCKER_IMAGE = "rukevweubio/my-grandel-app"
         DOCKER_TAG   = "latest"
-        SONAR_HOST   = "http://localhost:9000"
+        SONAR_HOST   = "https://sonarcloud.io"
         SONAR_PROJECT_KEY = "JenkinsPipeline"
         SONAR_PROJECT_NAME = "JenkinsPipeline"
     }
