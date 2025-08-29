@@ -68,15 +68,13 @@ pipeline {
             steps {
                 echo "Running SonarCloud code quality analysis (tests skipped)"
                 withCredentials([string(credentialsId: 'sonarcube-credentail', variable: 'SONAR_TOKEN')]) {
-                    sh '''
-                        ./gradlew sonarqube \
-                            -Dsonar.login=${SONAR_TOKEN} \
-                            -Dsonar.organization=rukevweubio-1 \
-                            -Dsonar.projectKey=JenkinsPipeline \
-                            -Dsonar.host.url=https://sonarcloud.io \
-                            -Dsonar.tests="" \
-                            -Dsonar.java.test.binaries=""
-                    '''
+                     sh '''
+                        ./gradlew sonar \
+                        -Dsonar.projectKey=rukevweubio_JenkinsPipeline \
+                        -Dsonar.organization=rukevweubio-1 \
+                        -Dsonar.host.url=https://sonarcloud.io \
+                        -Dsonar.login=${SONAR_TOKEN}
+            '''
                 }
             }
         }
