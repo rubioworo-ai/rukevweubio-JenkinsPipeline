@@ -68,9 +68,13 @@ pipeline {
             steps {
                 echo "📊 Running SonarQube code quality analysis"
                 withCredentials([string(credentialsId: 'sonarcube-credentail', variable: 'SONAR_TOKEN')]) {
-                    sh '''
-                        ./gradlew sonarqube -Dsonar.login=${SONAR_TOKEN}
-                    '''
+                   sh '''
+                    ./gradlew sonar \
+                    -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                    -Dsonar.organization=rukevweubio22 \
+                    -Dsonar.host.url=${SONAR_HOST} \
+                    -Dsonar.login=${SONAR_TOKEN}
+            '''
                 }
             }
         }
