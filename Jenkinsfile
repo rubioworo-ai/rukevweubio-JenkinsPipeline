@@ -1,34 +1,33 @@
 pipeline {
     agent any
 
-            environment {
-            DOCKER_IMAGE = "rukevweubio/my-grandel-app"
-            DOCKER_TAG   = "latest"
-            SONAR_HOST   = "https://sonarcloud.io"
-            SONAR_PROJECT_KEY = "rukevweubio_JenkinsPipeline"
-            SONAR_ORG_KEY = "rukevweubio-1"
-        }
-
+    environment {
+        DOCKER_IMAGE = "rukevweubio/my-grandel-app"
+        DOCKER_TAG   = "latest"
+        SONAR_HOST   = "https://sonarcloud.io"
+        SONAR_PROJECT_KEY = "ubiorukevwe_jenkinspipeline"
+        SONAR_ORGANIZATION = "ubiorukevwe"
+    }
 
     stages {
 
         stage('Checkout') {
             steps {
-                echo "Checking out source code"
+                echo "🔽 Checking out source code"
                 checkout scm
             }
         }
 
         stage('Build') {
             steps {
-                echo "Building application with Gradle"
+                echo "📦 Building application with Gradle"
                 sh "./gradlew clean build"
             }
         }
 
         stage('Docker Build & Tag') {
             steps {
-                echo "Building Docker image"
+                echo "🐳 Building Docker image"
                 sh "docker build -t ${DOCKER_IMAGE}:${DOCKER_TAG} ."
             }
         }
@@ -37,13 +36,13 @@ pipeline {
             parallel {
                 stage('Trivy Scan') {
                     steps {
-                        echo "Scanning image for vulnerabilities"
+                        echo "🔍 Scanning image for vulnerabilities"
                         sh "docker run --rm -v /var/run/docker.sock:/var/run/docker.sock aquasec/trivy image ${DOCKER_IMAGE}:${DOCKER_TAG}"
                     }
                 }
                 stage('GitLeaks Scan') {
                     steps {
-                        echo "Scanning for secrets in repo"
+                        echo "🔐 Scanning for secrets in repo"
                         sh '''docker run --rm -v "$(pwd)":/repo zricethezav/gitleaks:latest detect \
                             --source=/repo \
                             --report-format=json \
@@ -59,30 +58,31 @@ pipeline {
                 sh '''
                     set +x
                     curl -f --connect-timeout 10 "${SONAR_HOST}/api/system/status" \
-                        && echo "SonarCloud is UP and reachable" \
-                        || (echo "Failed to connect to SonarCloud"; exit 1)
+                        && echo "✅ SonarCloud is UP and reachable" \
+                        || (echo "❌ Failed to connect to SonarCloud"; exit 1)
                 '''
             }
         }
 
         stage('SonarCloud Analysis') {
             steps {
-                echo "Running SonarCloud code quality analysis (tests skipped)"
+                echo "📊 Running SonarCloud code quality analysis (tests skipped)"
                 withCredentials([string(credentialsId: 'sonarcube-credentail', variable: 'SONAR_TOKEN')]) {
-                     sh '''
+                    sh """
                         ./gradlew sonar \
-                        -Dsonar.projectKey=rukevweubio_JenkinsPipeline \
-                        -Dsonar.organization=rukevweubio-1 \
-                        -Dsonar.host.url=https://sonarcloud.io \
-                        -Dsonar.login=${SONAR_TOKEN}
-            '''
+                        -Dsonar.projectKey=${SONAR_PROJECT_KEY} \
+                        -Dsonar.organization=${SONAR_ORGANIZATION} \
+                        -Dsonar.host.url=${SONAR_HOST} \
+                        -Dsonar.login=\$SONAR_TOKEN \
+                        -Dsonar.tests=   # skipping tests
+                    """
                 }
             }
         }
 
         stage('Push to Docker Hub') {
             steps {
-                echo "Pushing Docker image to Docker Hub"
+                echo "⬆️ Pushing Docker image to Docker Hub"
                 withCredentials([usernamePassword(credentialsId: 'docker-hub-creds', usernameVariable: 'DOCKER_USER', passwordVariable: 'DOCKER_PASS')]) {
                     sh "echo \$DOCKER_PASS | docker login -u \$DOCKER_USER --password-stdin"
                     sh "docker push ${DOCKER_IMAGE}:${DOCKER_TAG}"
@@ -92,7 +92,7 @@ pipeline {
 
         stage('Run Docker Image') {
             steps {
-                echo "Running container on port 8082"
+                echo "🚀 Running container on port 8082"
                 sh "docker run -d -p 8082:8080 ${DOCKER_IMAGE}:${DOCKER_TAG}"
             }
         }
@@ -100,10 +100,10 @@ pipeline {
 
     post {
         success {
-            echo "Pipeline completed successfully!"
+            echo "🎉 Pipeline completed successfully!"
         }
         failure {
-            echo "Pipeline failed. Check logs for details."
+            echo "💥 Pipeline failed. Check logs for details."
         }
     }
 }
