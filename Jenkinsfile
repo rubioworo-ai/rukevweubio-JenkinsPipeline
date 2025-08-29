@@ -71,7 +71,7 @@ pipeline {
                     sh '''
                         ./gradlew sonarqube \
                             -Dsonar.login=${SONAR_TOKEN} \
-                            -Dsonar.organization=rukevweubio22 \
+                            -Dsonar.organization=rukevweubio-1 \
                             -Dsonar.projectKey=JenkinsPipeline \
                             -Dsonar.host.url=https://sonarcloud.io \
                             -Dsonar.tests="" \
