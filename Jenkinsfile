@@ -1,13 +1,14 @@
 pipeline {
     agent any
 
-    environment {
-        DOCKER_IMAGE = "rukevweubio/my-grandel-app"
-        DOCKER_TAG   = "latest"
-        SONAR_HOST   = "https://sonarcloud.io"
-        SONAR_PROJECT_KEY = "JenkinsPipeline"
-        SONAR_PROJECT_NAME = "JenkinsPipeline"
-    }
+            environment {
+            DOCKER_IMAGE = "rukevweubio/my-grandel-app"
+            DOCKER_TAG   = "latest"
+            SONAR_HOST   = "https://sonarcloud.io"
+            SONAR_PROJECT_KEY = "rukevweubio_JenkinsPipeline"
+            SONAR_ORG_KEY = "rukevweubio-1"
+        }
+
 
     stages {
 
