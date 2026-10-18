@@ -3,3 +3,11 @@
 *terraform/terraform.tfstate*
 erro*
 .terraform.tfstate.backup
+.terraform.tfvars
+*terraform-aks/.terraform.tf
+*terraform-aks/.terraform.tfstate*
+*terraform-aks/.terraform.tfvars
+*terraform-aks/.terraform.tfstate.backup
+*terraform-aks/.terraform/*
+*terraform-aks/.terraform/providers/*
+*terraform-aks/.terraform/providers/*
